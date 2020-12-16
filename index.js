@@ -142,7 +142,7 @@ client.connect(err => {
     })
 
     app.post('/orderSave', (req, res) => {
-        console.log(req.body);
+        //console.log(req.body);
 
         client.db("DeshMart").collection('orders').insertOne(req.body)
             .then(result => {
@@ -186,7 +186,76 @@ client.connect(err => {
             })
     })
 
+   
+
   })
+
+  app.post('/addPendingReview',(req,res)=>
+  {
+      console.log('now',req.body);
+
+      client.db("DeshMart").collection('reviewPending').insertOne(req.body)
+      .then(result => {
+          res.send(result.insertedCount > 0);
+      })
+
+      
+  })
+
+  app.get('/pedingReview',(req,res)=>
+  {
+    client.db("DeshMart").collection('reviewPending').find({})
+    .toArray((err, documents) => {
+
+       // console.log((documents));
+        res.send(documents);
+    })   
+  });
+
+
+  app.post('/addReview',(req,res)=>
+  {
+
+
+    ;
+
+    const {_id,name,review}=req.body;
+
+    client.db("DeshMart").collection('review').insertOne({name,review})
+    .then(result => {
+
+        client.db("DeshMart").collection('reviewPending').deleteOne({ _id: ObjectID(_id) })
+        .then(result => {
+            res.send(result.deletedCount > 0);
+        })
+        res.send(result.insertedCount > 0);
+    })
+
+  })
+
+
+  app.delete('/deletePendingReview', (req, res) => {
+
+    const {_id}=req.body;
+
+    console.log(req.body);
+
+    client.db("DeshMart").collection('reviewPending').deleteOne({ _id: ObjectID(_id) })
+        .then(result => {
+            res.send(result.deletedCount > 0);
+        })
+});
+
+
+   app.get('/review',(req,res)=>
+   {
+    client.db("DeshMart").collection('review').find({})
+    .toArray((err, documents) => {
+
+       // console.log((documents));
+        res.send(documents);
+    })    
+   })
 
 
 
