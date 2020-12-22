@@ -198,6 +198,7 @@ client.connect(err => {
       .then(result => {
           res.send(result.insertedCount > 0);
       })
+      .catch(err=>{})
 
       
   })
@@ -217,18 +218,19 @@ client.connect(err => {
   {
 
 
-    ;
+    
 
-    const {_id,name,review}=req.body;
+    const {_id,name,review,reviewDate}=req.body;
 
-    client.db("DeshMart").collection('review').insertOne({name,review})
+    client.db("DeshMart").collection('review').insertOne({name,review,reviewDate})
     .then(result => {
 
         client.db("DeshMart").collection('reviewPending').deleteOne({ _id: ObjectID(_id) })
         .then(result => {
             res.send(result.deletedCount > 0);
+
         })
-        res.send(result.insertedCount > 0);
+       
     })
 
   })
@@ -244,6 +246,7 @@ client.connect(err => {
         .then(result => {
             res.send(result.deletedCount > 0);
         })
+        .catch(err=>{})
 });
 
 
